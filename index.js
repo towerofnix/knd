@@ -285,7 +285,6 @@ const equips = {
     ['Siegemage Robes', 1543, ['mystic', 'water']],
     ['Darkscale Battlegear', 1143, ['mystic', 'fire']],
     ['Overgrown Lifeplate', 1382, ['mystic', 'earth']],
-    ['Chaotic Hellguard', 1535, ['mystic', 'water']],
   ],
   rings: [
     ['Cupid\'s Love', 267, 'earth'],
@@ -334,9 +333,9 @@ const entries = possibleKnights.map(knight => {
       totalDamage += stats.damage
       totalXP += stats.xp
     }
-    const avgDamage = Math.round(totalDamage / samples)
-    const avgXP = Math.round(totalXP / samples)
-    const rate = Math.round(avgXP / avgDamage)
+    const avgDamage = totalDamage / samples
+    const avgXP = totalXP / samples
+    const rate = avgXP / avgDamage
 
     return {knight, zoneName, zone, avgDamage, avgXP, rate}
   })
@@ -344,19 +343,35 @@ const entries = possibleKnights.map(knight => {
 
 entries.sort((a, b) => b.rate - a.rate)
 
+const map = fn => (strings, ...expressions) => {
+  const result = [strings[0]]
+  expressions.forEach((expr, i) => {
+    result.push(fn(expr), strings[i + 1])
+  })
+  return result.join('')
+}
+
+const round = map(arg => {
+  if (typeof arg === 'number') {
+    return Math.round(arg)
+  } else {
+    return arg
+  }
+})
+
 for (let i = entries.length - 1; i >= 0; --i) {
   const { zoneName, rate, avgDamage, avgXP, knight } = entries[i]
-  console.log(`${rate} (${avgXP}/${avgDamage}) \t-- [${zoneName}] ${knight.title}`)
+  console.log(round`${rate} (${avgXP}/${avgDamage}) \t-- [${zoneName}] ${knight.title}`)
 }
 
 console.log('')
 
 for (let i = 2; i >= 0; --i) {
   const { zoneName, knight, avgDamage, avgXP, rate } = entries[i]
-  console.log(`[${zoneName}] ${knight.title}`)
-  console.log('Average damage:', avgDamage)
-  console.log('Average XP:', avgXP)
-  console.log('XP/damage rate:', rate, '(Higher is better)')
+  console.log(round`[${zoneName}] ${knight.title}`)
+  console.log(round`Average damage: ${avgDamage}`)
+  console.log(round`Average XP: ${avgXP}`)
+  console.log(round`XP/damage rate: ${rate} (Higher is better)`)
   console.log('')
 }
 
