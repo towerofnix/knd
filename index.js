@@ -32,15 +32,15 @@ const zoneData = {
         ['MysGrmln', 'MysGrmln', 'MysGrmln', 'MysGrmln']
       ],
       'boss': [
-        ['MysDriad', 'MysGrmln', 'LitCloud'],
-        ['MysDriad', 'MysGrmln', 'FlotBear', 'LitCloud'],
+        ['MysSpirit', 'MysGrmln', 'LitCloud'],
+        ['MysSpirit', 'MysGrmln', 'FlotBear', 'LitCloud'],
       ]
     },
     enemies: {
       // TODO: These stats are all wrong. (Still!)
       'FlotBear': ['air', 15895, 725],
       'MysGrmln': ['mystic', 14025, 621],
-      'MysDriad': ['mystic', 19916, 863],
+      'MysSpirit': ['mystic', 19916, 863],
       'LitCloud': ['air', 49791, 2601]
     }
   },
@@ -50,21 +50,24 @@ const zoneData = {
     waveEntries: {
       'random': [
         ['FlotBear', 'MysGrmln', 'MysGrmln', 'FlotBear'],
-        ['MysDriad', 'FlotBear', 'MysGrmln', 'MysGrmln'],
+        ['MysSpirit', 'FlotBear', 'MysGrmln', 'MysGrmln'],
         ['MysGrmln', 'MysGrmln', 'MysGrmln', 'MysGrmln'],
         ['MysGrmln', 'MysGrmln', 'FlotBear', 'FlotBear', 'MysGrmln']
       ],
       'boss': [
-        ['MysDriad', 'FlotBear', 'MysGrmln', 'WndTurtl']
+        ['MysSpirit', 'FlotBear', 'MysGrmln', 'WndTurtl']
       ]
     },
     enemies: {
       'FlotBear': ['air', 18500, 766],
       'MysGrmln': ['mystic', 13320, 657],
-      'MysDriad': ['mystic', 18870, 912],
+      'MysSpirit': ['mystic', 18870, 912],
       'WndTurtl': ['mystic', 54000, 2430]
     }
   },
+
+  // TODO: Go through the Writhing Cascades again, with less defense, to get
+  // more accurate attack values.
 
   'Cascads1': {
     waves: ['random', 'random', 'random', 'boss'],
@@ -79,9 +82,9 @@ const zoneData = {
       ],
     },
     enemies: {
-      'AirGhost': ['air', 4156, 179], // 3
-      'WtrMage': ['water', 5818, 179], // 7
-      'StormGod': [['air', 'water'], 9143, 596] // 11 596
+      'AirGhost': ['air', 4156, 179],
+      'WtrMage': ['water', 5818, 179],
+      'StormGod': [['air', 'water'], 9143, 596]
     }
   },
 
@@ -167,18 +170,59 @@ const zoneData = {
       'FishMan': ['water', 7405, 309],
       'SeaSrpnt': [['water', 'air'], 12959, 859]
     }
+  },
+
+  'Steppes1': {
+    waves: ['random', 'random', 'random', 'random', 'boss'],
+    waveEntries: {
+      'random': [
+        ['MudBeast', 'MudBeast', 'MudBeast'],
+        ['MudBeast', 'MysDryad', 'MysDryad'],
+      ],
+      'boss': [
+        ['MysDryad', 'MudBeast', 'Chimera']
+      ]
+    },
+    enemies: {
+      'MudBeast': ['earth', 8312, 296],
+      'MysDryad': ['mystic', 8312, 296],
+      'Chimera': [['earth', 'mystic'], 15239, 985] // 11 985
+    }
+  },
+
+  'Citadel1': {
+    waves: ['random', 'random', 'random', 'random', 'random', 'random', 'boss'],
+    waveEntries: {
+      'random': [
+        ['FyrBeast', 'FyrBeast', 'FyrBeast'],
+        ['MudBear', 'FyrBeast', 'FyrBeast', 'FyrBeast'],
+        ['MudBear', 'MudBear', 'FyrBeast'], // 2634
+      ],
+      'boss': [
+        ['RockFish', 'FyrBeast', 'SklClubr']
+      ]
+    },
+    enemies: {
+      'FyrBeast': ['fire', 20365, 830],
+      'MudBear': ['earth', 16662, 791],
+      'RockFish': ['earth', 17773, 800], // TODO: This is definitely not exactly right!
+      'SklClubr': ['mystic', 36657, 2634]
+    }
   }
 }
 
 const elements = ['air', 'water', 'fire', 'mystic', 'earth']
 
 const getAdvantageFactor = function(attackerElements, defenderElements) {
-  let awesomes = []
+  const awesomes = []
   const atkEls = Array.isArray(attackerElements) ? attackerElements : [attackerElements]
   const defEls = Array.isArray(defenderElements) ? defenderElements : [defenderElements]
-  for (let atkEl of atkEls) {
-    for (let defEl of defEls) {
-      if (elements[elements.indexOf(atkEl) + 1 % elements.length] === defEl) {
+  for (const atkEl of atkEls) {
+    if (elements.indexOf(atkEl) === -1) {
+      continue
+    }
+    for (const defEl of defEls) {
+      if (elements[(elements.indexOf(atkEl) + 1) % elements.length] === defEl) {
         awesomes.push(atkEl + ' -> ' + defEl)
       }
     }
@@ -233,12 +277,12 @@ const getBattleStats = function(zone, knight) {
 
 // ---------------------------------------
 
-const heroDefense = 587
+const heroDefense = 589
 
 const equips = {
   armor: [
     ['Prehistoric Huntsguard', 1436, ['earth', 'air']],
-    ['Siegemage Robes', 1493, ['mystic', 'water']],
+    ['Siegemage Robes', 1543, ['mystic', 'water']],
     ['Darkscale Battlegear', 1143, ['mystic', 'fire']],
     ['Overgrown Lifeplate', 1382, ['mystic', 'earth']],
     ['Chaotic Hellguard', 1535, ['mystic', 'water']],
@@ -301,8 +345,8 @@ const entries = possibleKnights.map(knight => {
 entries.sort((a, b) => b.rate - a.rate)
 
 for (let i = entries.length - 1; i >= 0; --i) {
-  const { zoneName, rate, knight } = entries[i]
-  console.log(`${rate} -- [${zoneName}] ${knight.title}`)
+  const { zoneName, rate, avgDamage, avgXP, knight } = entries[i]
+  console.log(`${rate} (${avgXP}/${avgDamage}) \t-- [${zoneName}] ${knight.title}`)
 }
 
 console.log('')
@@ -318,6 +362,6 @@ for (let i = 2; i >= 0; --i) {
 
 console.log('-------------------------------------------')
 
-console.log('Attack stat:', getAttackStat(7, 1, 2666, ['water', 'air'], ['earth', 'air']))
+console.log('Attack stat:', getAttackStat(33, 1, 2666, ['mystic'], ['earth', 'air']))
 //console.log('damage:', getDamage(1, 18240, 2388, ['earth'], ['mystic', 'earth']))
 
