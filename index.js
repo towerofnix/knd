@@ -190,6 +190,25 @@ const zoneData = {
     }
   },
 
+  'BlzTids1': {
+    waves: ['random', 'random', 'random', 'random', 'boss'],
+    waveEntries: {
+      'random': [
+        ['FyrBeast', 'FyrBeast', 'FyrBeast'],
+        ['FyrBeast', 'MysGrmln', 'FyrBeast', 'FyrBeast'],
+        ['FyrBeast', 'MysGrmln', 'MysGrmln']
+      ],
+      'boss': [
+        ['MysGrmln', 'FyrBeast', 'Hydra']
+      ]
+    },
+    enemies: {
+      'FyrBeast': ['fire', 10000, 382],
+      'MysGrmln': ['mystic', 8343, 327],
+      'Hydra': [['fire', 'water'], 19000, 1212]
+    }
+  },
+
   'Citadel1': {
     waves: ['random', 'random', 'random', 'random', 'random', 'random', 'boss'],
     waveEntries: {
@@ -207,6 +226,38 @@ const zoneData = {
       'MudBear': ['earth', 16662, 791],
       'RockFish': ['earth', 17773, 800], // TODO: This is definitely not exactly right!
       'SklClubr': ['mystic', 36657, 2634]
+    }
+  },
+
+  'DarKndm1': {
+    waves: ['boss1', 'boss2', 'boss3'],
+    waveEntries: {
+      'boss1': [
+        ['ToughRat', 'ToughRat', 'RockFish', 'TerBear', 'StonSnek']
+      ],
+      'boss2': [
+        ['ArmrFish', 'Swashbuk', 'Swashbuk', 'WatrElem']
+      ],
+      'boss3': [
+        ['TerStatu', 'WtrBeast', 'WtrBeast', 'WtrHawk', 'Assassin']
+      ]
+    },
+    enemies: {
+      'ToughRat': ['earth', 17722, 808], // ..11
+      'RockFish': ['earth', 19333, 1167], // ..12
+      'TerBear': ['earth', 19333, 898], // ...12
+      'StonSnek': ['earth', 33833, 2990], // ..21
+
+      'ArmrFish': ['water', 20195, 1122], // ..13 <- DIFFERENT DEFENSE: 2237
+      'Swashbuk': ['water', 19333, 898], // ..12
+      'WatrElem': ['water', 37055, 2990], // ..23
+
+      'TerStatu': ['earth', 17722, 1077], // ..11
+      'WtrBeast': ['water', 19333, 942], // ..12
+      'WtrHawk': ['water', 22555, 1077], // ...14
+      'Assassin': [['mystic', 'earth'], 40277, 2990] // ..25
+
+      // 2320 defense
     }
   }
 }
@@ -277,49 +328,91 @@ const getBattleStats = function(zone, knight) {
 
 // ---------------------------------------
 
-const heroDefense = 589
+const heroDefense = 306
+const heroHealth = 580
 
 const equips = {
+  // Name, +DEF, elements
+  //                                               Air    Water    Fire    Mystic    Earth
   armor: [
-    ['Prehistoric Huntsguard', 1436, ['earth', 'air']],
-    ['Siegemage Robes', 1543, ['mystic', 'water']],
-    ['Darkscale Battlegear', 1143, ['mystic', 'fire']],
-    ['Overgrown Lifeplate', 1382, ['mystic', 'earth']],
+    ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
+    ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
+//  ['Northerner\'s Battlegear', 685,            [       'water'                           ]],
+    ['Siegemage Robes', 1613,                    [       'water',         'mystic'         ]],
+    ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
+    ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
+//  ['Silver Chromatic Mantle', 390, 'starmetal'],
   ],
+
+  // Name, +DEF, +HP, element
+  //                                               Air    Water    Fire    Mystic    Earth
   rings: [
-    ['Cupid\'s Love', 267, 'earth'],
-    ['Stinging Stone of Endurance', 141, 'air'],
-    ['Holy Petal of Shelter', 159, 'water'],
-    ['Sturdy Loop', 66, 'mystic'],
-    ['Stinging Sheath of Endurance', 126, 'fire']
+    ['Stinging Stone of Endurance', 141, 0,       'air'                                    ],
+    ['Crest of Growth', 0, 44,                    'air'                                    ],
+    ['Holy Petal of Shelter', 159, 104,                  'water'                           ],
+    ['Stinging Sheath of Endurance', 126, 0,                      'fire'                   ],
+    ['Lavish Crest', 0, 44,                                       'fire'                   ],
+    ['Sturdy Loop', 66, 0,                                                'mystic'         ],
+    ['Fierce Stone of Rest', 0, 14,                                       'mystic'         ],
+    ['Cupid\'s Love', 273, 16,                                                      'earth'],
+    ['Robust Stone of Youth', 91, 22,                                               'earth'],
+    ['(--none--)', 0, 0, '*'],
   ],
+
+  // Name, +DEF, +HP, element
+  //                                               Air    Water    Fire    Mystic    Earth
   amulets: [
-    ['Choker of Iron', 170, 'air'],
-    ['Sturdy Pendant of Skill', 52, 'earth'],
-    ['Prism of Endurance', 95, 'mystic'],
-    ['Necklace of Shelter', 153, 'fire'],
+    ['Choker of Iron', 180, 0,                    'air'                                    ],
+    ['Bauble of Rest', 0, 15,                     'air'                                    ],
+    ['Locket of Endurance', 90, 0,                       'water'                           ],
+    ['Shining Locket', 0, 24,                            'water'                           ],
+    ['Necklace of Shelter', 153, 0,                               'fire'                   ],
+    ['Pillars of Grace', 0, 58,                                   'fire'                   ],
+    ['Shining Majestic of Endurance', 137, 28,                    'fire'                   ],
+    ['Prism of Endurance', 95, 0,                                         'mystic'         ],
+    ['Stinging Heirloom of Majesty', 0, 89,                               'mystic'         ],
+    ['Shining Necklace of Endurance', 74, 23,                             'mystic'         ],
+    ['Sturdy Pendant of Skill', 52, 0,                                              'earth'],
+    ['Charm of Youth', 0, 32,                                                       'earth'],
+    ['(--none--)', 0, 0, '*'],
   ],
+
+  // Name, +ATK/DEF, element
+  //                                               Air    Water    Fire    Mystic    Earth
   pets: [
-    ['Mudfur', 313, 'earth'],
-    ['Dreadhorn', 192, 'mystic'],
-    ['Puffwyrm', 232, 'air'],
-    ['Pyrebrush', 76, 'fire'],
-    ['Rivergill', 102, 'water'],
+    ['Puffwyrm', 232,                             'air'                                    ],
+    ['Rivergill', 102,                                   'water'                           ],
+    ['Pyrebrush', 76,                                             'fire'                   ],
+    ['Dreadhorn', 192,                                                    'mystic'         ],
+    ['Mudfur', 313,                                                                 'earth'],
+    ['(--none--)', 0, '*'],
   ]
 }
 
 const joinArrays = (a, b) => a.concat(b)
 const possibleKnights = equips.armor.map(armor => {
-  const elementFilter = item => armor[2].some(el => el === item[2])
-  return equips.rings.filter(elementFilter).map(ring => {
-    return equips.amulets.filter(elementFilter).map(amulet => {
-      return equips.pets.filter(elementFilter).map(pet => {
-        return {
-          title: `${armor[0]} + ${ring[0]} + ${amulet[0]} + ${pet[0]}`,
-          defense: armor[1] + ring[1] + amulet[1] + pet[1] + heroDefense,
-          elements: armor[2]
-        }
-      })
+  const elementFilter = n => item => (armor[2] === 'starmetal' || item[n] === '*') ? true : armor[2].some(el => el === item[n])
+  return equips.rings.filter(elementFilter(3)).map(ring => {
+    return equips.amulets.filter(elementFilter(3)).map(amulet => {
+      const health = heroHealth + ring[2] + amulet[2]
+      const baseDef = heroDefense + armor[1] + ring[1] + amulet[1]
+      if (armor[2] === 'starmetal') {
+        return [{
+          title: `${armor[0]} + ${ring[0]} + ${amulet[0]} (Any pet)`,
+          defense: baseDef,
+          health,
+          elements: 'starmetal'
+        }]
+      } else {
+        return equips.pets.filter(elementFilter(2)).map(pet => {
+          return {
+            title: `${armor[0]} + ${ring[0]} + ${amulet[0]} + ${pet[0]}`,
+            defense: baseDef + pet[1],
+            health,
+            elements: armor[2]
+          }
+        })
+      }
     }).reduce(joinArrays, [])
   }).reduce(joinArrays, [])
 }).reduce(joinArrays, [])
@@ -336,12 +429,13 @@ const entries = possibleKnights.map(knight => {
     const avgDamage = totalDamage / samples
     const avgXP = totalXP / samples
     const rate = avgXP / avgDamage
+    const score = rate * knight.health
 
-    return {knight, zoneName, zone, avgDamage, avgXP, rate}
+    return {knight, zoneName, zone, avgDamage, avgXP, rate, score}
   })
 }).reduce((a, b) => a.concat(b), [])
 
-entries.sort((a, b) => b.rate - a.rate)
+entries.sort((a, b) => b.score - a.score)
 
 const map = fn => (strings, ...expressions) => {
   const result = [strings[0]]
@@ -359,24 +453,29 @@ const round = map(arg => {
   }
 })
 
-for (let i = entries.length - 1; i >= 0; --i) {
-  const { zoneName, rate, avgDamage, avgXP, knight } = entries[i]
-  console.log(round`${rate} (${avgXP}/${avgDamage}) \t-- [${zoneName}] ${knight.title}`)
+const pad = (str, len) => str.length >= len ? str : pad(str + ' ', len)
+
+for (let i = Math.min(2000, entries.length - 1); i >= 0; --i) {
+  const { zoneName, rate, score, avgDamage, avgXP, knight } = entries[i]
+  console.log(pad(round`{${score}} = ${knight.health} * ${rate} (${avgXP}/${avgDamage})`, 32) + `--  [${zoneName}] ${knight.title}`)
 }
 
 console.log('')
 
-for (let i = 2; i >= 0; --i) {
-  const { zoneName, knight, avgDamage, avgXP, rate } = entries[i]
+for (let i = Math.min(entries.length - 1, 2); i >= 0; --i) {
+  const { zoneName, knight, avgDamage, avgXP, rate, score } = entries[i]
   console.log(round`[${zoneName}] ${knight.title}`)
+  console.log(round`Experience per full health bar (${knight.health} HP): ${score}`)
   console.log(round`Average damage: ${avgDamage}`)
   console.log(round`Average XP: ${avgXP}`)
   console.log(round`XP/damage rate: ${rate} (Higher is better)`)
   console.log('')
 }
 
+console.log('Total entries:', entries.length)
+console.log('Total possible knights:', possibleKnights.length)
 console.log('-------------------------------------------')
 
-console.log('Attack stat:', getAttackStat(33, 1, 2666, ['mystic'], ['earth', 'air']))
+console.log('Attack stat:', getAttackStat(13, 1, 2237, ['mystic', 'earth'], ['mystic', 'water']))
 //console.log('damage:', getDamage(1, 18240, 2388, ['earth'], ['mystic', 'earth']))
 
