@@ -328,8 +328,8 @@ const getBattleStats = function(zone, knight) {
 
 // ---------------------------------------
 
-const heroDefense = 306
-const heroHealth = 580
+const heroDefense = 365
+const heroHealth = 585
 
 const equips = {
   // Name, +DEF, elements
@@ -338,7 +338,7 @@ const equips = {
     ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
     ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
 //  ['Northerner\'s Battlegear', 685,            [       'water'                           ]],
-    ['Siegemage Robes', 1613,                    [       'water',         'mystic'         ]],
+    ['Siegemage Robes', 1633,                    [       'water',         'mystic'         ]],
     ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
     ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
 //  ['Silver Chromatic Mantle', 390, 'starmetal'],
@@ -349,7 +349,7 @@ const equips = {
   rings: [
     ['Stinging Stone of Endurance', 141, 0,       'air'                                    ],
     ['Crest of Growth', 0, 44,                    'air'                                    ],
-    ['Holy Petal of Shelter', 159, 104,                  'water'                           ],
+    ['Holy Petal of Shelter', 161, 105,                  'water'                           ],
     ['Stinging Sheath of Endurance', 126, 0,                      'fire'                   ],
     ['Lavish Crest', 0, 44,                                       'fire'                   ],
     ['Sturdy Loop', 66, 0,                                                'mystic'         ],
@@ -370,7 +370,7 @@ const equips = {
     ['Pillars of Grace', 0, 58,                                   'fire'                   ],
     ['Shining Majestic of Endurance', 137, 28,                    'fire'                   ],
     ['Prism of Endurance', 95, 0,                                         'mystic'         ],
-    ['Stinging Heirloom of Majesty', 0, 89,                               'mystic'         ],
+    ['Stinging Heirloom of Majesty', 0, 90,                               'mystic'         ],
     ['Shining Necklace of Endurance', 74, 23,                             'mystic'         ],
     ['Sturdy Pendant of Skill', 52, 0,                                              'earth'],
     ['Charm of Youth', 0, 32,                                                       'earth'],
