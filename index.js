@@ -328,8 +328,8 @@ const getBattleStats = function(zone, knight) {
 
 // ---------------------------------------
 
-const heroDefense = 365
-const heroHealth = 585
+const heroDefense = 316
+const heroHealth = 607
 
 const equips = {
   // Name, +DEF, elements
@@ -338,6 +338,7 @@ const equips = {
     ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
     ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
 //  ['Northerner\'s Battlegear', 685,            [       'water'                           ]],
+    ['Pelagic Platemail', 1447,                  [       'water'                           ]],
     ['Siegemage Robes', 1633,                    [       'water',         'mystic'         ]],
     ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
     ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
@@ -401,7 +402,8 @@ const possibleKnights = equips.armor.map(armor => {
           title: `${armor[0]} + ${ring[0]} + ${amulet[0]} (Any pet)`,
           defense: baseDef,
           health,
-          elements: 'starmetal'
+          elements: 'starmetal',
+          armor, ring, amulet, pet: ['(--Any pet--)', 0, '(--Any element--)']
         }]
       } else {
         return equips.pets.filter(elementFilter(2)).map(pet => {
@@ -409,7 +411,8 @@ const possibleKnights = equips.armor.map(armor => {
             title: `${armor[0]} + ${ring[0]} + ${amulet[0]} + ${pet[0]}`,
             defense: baseDef + pet[1],
             health,
-            elements: armor[2]
+            elements: armor[2],
+            armor, ring, amulet, pet
           }
         })
       }
@@ -433,7 +436,7 @@ const entries = possibleKnights.map(knight => {
 
     return {knight, zoneName, zone, avgDamage, avgXP, rate, score}
   })
-}).reduce((a, b) => a.concat(b), [])
+}).reduce(joinArrays, [])
 
 entries.sort((a, b) => b.score - a.score)
 
@@ -462,8 +465,20 @@ for (let i = Math.min(2000, entries.length - 1); i >= 0; --i) {
 
 console.log('')
 
-for (let i = Math.min(entries.length - 1, 2); i >= 0; --i) {
-  const { zoneName, knight, avgDamage, avgXP, rate, score } = entries[i]
+const displayedArmors = []
+const displayedEntries = []
+for (let i = 0; i < entries.length && displayedArmors.length < 3; i++) {
+  const { knight: { armor } } = entries[i]
+
+  if (displayedArmors.includes(armor)) {
+    continue
+  }
+
+  displayedEntries.unshift(entries[i])
+  displayedArmors.push(armor)
+}
+
+for (const { zoneName, knight, avgDamage, avgXP, rate, score } of displayedEntries) {
   console.log(round`[${zoneName}] ${knight.title}`)
   console.log(round`Experience per full health bar (${knight.health} HP): ${score}`)
   console.log(round`Average damage: ${avgDamage}`)
