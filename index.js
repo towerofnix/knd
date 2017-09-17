@@ -1,13 +1,7 @@
 'use strict'
 
-const CRIT_MODIFIER = 1.5
-const ELEMENTAL_MODIFIER = 1.5
-
-const { zoneData, equips } = require('./data')
+const { zoneData, equips, heroDefense, heroHealth } = require('./data')
 const { getBattleStats } = require('./battle-sim')
-
-const heroDefense = 316
-const heroHealth = 607
 
 const joinArrays = (a, b) => a.concat(b)
 const possibleKnights = equips.armor.map(armor => {

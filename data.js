@@ -1,6 +1,114 @@
 'use strict'
 
 module.exports = {
+  // Base health and defense. (This is tied only to the knight's level.)
+  heroHealth: 607,
+  heroDefense: 316,
+
+  // Equipment (armor, rings, amulets, and pets). More of these means more simulations to run.
+  //
+  // As a rule of thumb, it's unnecessary to include both of two armors of the same element when
+  // one of them has a lower defense. After all, they act completely identically, aside from one
+  // having one lower stat; there is no possible case in which using the armor of lesser defense
+  // is a better choice. On the other hand, it's good to include a set of armors which contains
+  // a variety of elemental combinations; sometimes a higher defense value doesn't outweigh the
+  // resistance that armors with different elements have.
+  //
+  // Comparable can be said about rings and amulets. Trinkets like these may grant their wearers
+  // a boost to health, defense, or both. Since any given trinket may only have one element, it
+  // might seem like it's best to just give the program the ring or amulet that seems to have an
+  // advantage over the others of the same element. But there is no hard statement that you should
+  // always look to optimize health over defense, or vice versa, so it's good to include a set
+  // which has variety in both defense and health boosts.
+  //
+  // Pets only have one stat, though (a boost to both attack and defense), so you may as well
+  // only enter one pet for each element (the one with the greatest attack/defense boost).
+  //
+  // All this equipment is stored in a convenient table-like listing. If you follow that, it'll
+  // be easier to manage and understand this code.
+  equips: {
+    // Name, +DEF, elements
+    //                                               Air    Water    Fire    Mystic    Earth
+    armor: [
+      ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
+      ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
+    //['Northerner\'s Battlegear', 685,            [       'water'                           ]],
+      ['Pelagic Platemail', 1447,                  [       'water'                           ]],
+      ['Siegemage Robes', 1633,                    [       'water',         'mystic'         ]],
+      ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
+      ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
+    //['Silver Chromatic Mantle', 390, 'starmetal'],
+    ],
+
+    // Name, +DEF, +HP, element
+    //                                               Air    Water    Fire    Mystic    Earth
+    rings: [
+      ['Stinging Stone of Endurance', 141, 0,       'air'                                    ],
+      ['Crest of Growth', 0, 44,                    'air'                                    ],
+      ['Holy Petal of Shelter', 161, 105,                  'water'                           ],
+      ['Stinging Sheath of Endurance', 126, 0,                      'fire'                   ],
+      ['Lavish Crest', 0, 44,                                       'fire'                   ],
+      ['Sturdy Loop', 66, 0,                                                'mystic'         ],
+      ['Fierce Stone of Rest', 0, 14,                                       'mystic'         ],
+      ['Cupid\'s Love', 273, 16,                                                      'earth'],
+      ['Robust Stone of Youth', 91, 22,                                               'earth'],
+      ['(--none--)', 0, 0, '*'],
+    ],
+
+    // Name, +DEF, +HP, element
+    //                                               Air    Water    Fire    Mystic    Earth
+    amulets: [
+      ['Choker of Iron', 180, 0,                    'air'                                    ],
+      ['Bauble of Rest', 0, 15,                     'air'                                    ],
+      ['Locket of Endurance', 90, 0,                       'water'                           ],
+      ['Shining Locket', 0, 24,                            'water'                           ],
+      ['Necklace of Shelter', 153, 0,                               'fire'                   ],
+      ['Pillars of Grace', 0, 58,                                   'fire'                   ],
+      ['Shining Majestic of Endurance', 137, 28,                    'fire'                   ],
+      ['Prism of Endurance', 95, 0,                                         'mystic'         ],
+      ['Stinging Heirloom of Majesty', 0, 90,                               'mystic'         ],
+      ['Shining Necklace of Endurance', 74, 23,                             'mystic'         ],
+      ['Sturdy Pendant of Skill', 52, 0,                                              'earth'],
+      ['Charm of Youth', 0, 32,                                                       'earth'],
+      ['(--none--)', 0, 0, '*'],
+    ],
+
+    // Name, +ATK/DEF, element
+    //                                               Air    Water    Fire    Mystic    Earth
+    pets: [
+      ['Puffwyrm', 232,                             'air'                                    ],
+      ['Rivergill', 102,                                   'water'                           ],
+      ['Pyrebrush', 76,                                             'fire'                   ],
+      ['Dreadhorn', 192,                                                    'mystic'         ],
+      ['Mudfur', 313,                                                                 'earth'],
+      ['(--none--)', 0, '*'],
+    ]
+  },
+
+  // A "zone" is a stage of a dungeon in the world map. For example, 'DarKndm1' refers to the
+  // normal difficulty stage of Kingdom of Darkness; 'Steppes3' refers to the Valor stage of
+  // Sparking Steppes.
+  //
+  // Every zone has a list of waves. When a simulation for this zone runs, the program will
+  // pick a random item from the corresponding array in waveEntries and use that as the list of
+  // enemies the hero needs to fight.
+  //
+  // All that is used to simulate the fact that most zones in Knights and Dragons are composed
+  // of two types of waves: a series of random waves, and then a boss wave. Each zone has a list
+  // of possible random waves, which is used for picking the waves fought before the boss.
+  //
+  // Also found within the data for a given zone is the data for each of the enemies fought in
+  // that zone. The reason we store enemy data per-zone rather than in a global bestiary is
+  // because every zone contains enemies of different stats. As an example, you'll see that the
+  // ToughRats in Relic Ruins have much less attack than those found in the Kingdom of Darkness.
+  //
+  // Every enemy has three important pieces of information: the enemy's elements, its dropped
+  // experience, and its attack stat. An enemy's attack stat can't simply be gotten at a glance
+  // in-game; rather, it must be calculated using the `getAttackStat` function in battle-sim.js.
+  // (See the end of that file for example usage.) Its experience can be found by looking at the
+  // values of the experience bubble items picked up after beating the enemies in a battle's wave.
+  // (This tends to require a fair amount of patience, since it can be hard to pick out single
+  // experience bubbles in the cloud of items that drop at the end of a wave.)
   zoneData: {
     'GrdCros1': {
       waves: ['random', 'random', 'random', 'random', 'boss'],
@@ -258,64 +366,5 @@ module.exports = {
         // 1560 defense
       }
     }
-  },
-
-  equips: {
-    // Name, +DEF, elements
-    //                                               Air    Water    Fire    Mystic    Earth
-    armor: [
-      ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
-      ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
-    //['Northerner\'s Battlegear', 685,            [       'water'                           ]],
-      ['Pelagic Platemail', 1447,                  [       'water'                           ]],
-      ['Siegemage Robes', 1633,                    [       'water',         'mystic'         ]],
-      ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
-      ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
-    //['Silver Chromatic Mantle', 390, 'starmetal'],
-    ],
-
-    // Name, +DEF, +HP, element
-    //                                               Air    Water    Fire    Mystic    Earth
-    rings: [
-      ['Stinging Stone of Endurance', 141, 0,       'air'                                    ],
-      ['Crest of Growth', 0, 44,                    'air'                                    ],
-      ['Holy Petal of Shelter', 161, 105,                  'water'                           ],
-      ['Stinging Sheath of Endurance', 126, 0,                      'fire'                   ],
-      ['Lavish Crest', 0, 44,                                       'fire'                   ],
-      ['Sturdy Loop', 66, 0,                                                'mystic'         ],
-      ['Fierce Stone of Rest', 0, 14,                                       'mystic'         ],
-      ['Cupid\'s Love', 273, 16,                                                      'earth'],
-      ['Robust Stone of Youth', 91, 22,                                               'earth'],
-      ['(--none--)', 0, 0, '*'],
-    ],
-
-    // Name, +DEF, +HP, element
-    //                                               Air    Water    Fire    Mystic    Earth
-    amulets: [
-      ['Choker of Iron', 180, 0,                    'air'                                    ],
-      ['Bauble of Rest', 0, 15,                     'air'                                    ],
-      ['Locket of Endurance', 90, 0,                       'water'                           ],
-      ['Shining Locket', 0, 24,                            'water'                           ],
-      ['Necklace of Shelter', 153, 0,                               'fire'                   ],
-      ['Pillars of Grace', 0, 58,                                   'fire'                   ],
-      ['Shining Majestic of Endurance', 137, 28,                    'fire'                   ],
-      ['Prism of Endurance', 95, 0,                                         'mystic'         ],
-      ['Stinging Heirloom of Majesty', 0, 90,                               'mystic'         ],
-      ['Shining Necklace of Endurance', 74, 23,                             'mystic'         ],
-      ['Sturdy Pendant of Skill', 52, 0,                                              'earth'],
-      ['Charm of Youth', 0, 32,                                                       'earth'],
-      ['(--none--)', 0, 0, '*'],
-    ],
-
-    // Name, +ATK/DEF, element
-    //                                               Air    Water    Fire    Mystic    Earth
-    pets: [
-      ['Puffwyrm', 232,                             'air'                                    ],
-      ['Rivergill', 102,                                   'water'                           ],
-      ['Pyrebrush', 76,                                             'fire'                   ],
-      ['Dreadhorn', 192,                                                    'mystic'         ],
-      ['Mudfur', 313,                                                                 'earth'],
-      ['(--none--)', 0, '*'],
-    ]
   }
 }
