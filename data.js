@@ -2,8 +2,10 @@
 
 module.exports = {
   // Base health and defense. (This is tied only to the knight's level.)
-  heroHealth: 607,
-  heroDefense: 316,
+  baseHero: {
+    health: 607,
+    defense: 316
+  },
 
   // Equipment (armor, rings, amulets, and pets). More of these means more simulations to run.
   //
