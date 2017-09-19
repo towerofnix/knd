@@ -18,11 +18,11 @@ function getAdvantageFactor(attackerElements, defenderElements) {
   }
   const count = awesomes.length
   if (count === 0) {
-    return 0.6
-  } else if (count === 1) {
     return 1.0
+  } else if (count === 1) {
+    return 1.5
   } else if (count === 2) {
-    return 1.3
+    return 2.0
   } else {
     throw new Error('Bad advantage factor count: ' + count + ' ' + awesomes.join(', '))
   }
