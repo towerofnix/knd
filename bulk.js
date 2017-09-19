@@ -89,7 +89,10 @@ const pad = (str, len) => str.length >= len ? str : pad(str + ' ', len)
 function undetailedShowTopNResults(results, count) {
   for (let i = Math.min(count, results.length - 1); i >= 0; --i) {
     const { zoneName, rate, score, avgDamage, avgXP, knight } = results[i]
-    console.log(pad(round`{${score}} = ${knight.health} * ${rate} (${avgXP}/${avgDamage})`, 32) + `--  [${zoneName}] ${knight.title}`)
+    console.log(
+      pad(`(# ${i + 1}) `, results.length.toString().length + 6) +
+      pad(round`{${score} XP} = ${knight.health} * ${rate} (${avgXP}/${avgDamage})`, 35)
+      + `--  [${zoneName}] ${knight.title}`)
   }
 }
 

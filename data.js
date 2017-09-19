@@ -131,8 +131,6 @@ module.exports = {
         'TerBear': ['earth', 30500, 898],
         'StonSnek': ['earth', 53000, 2990],
 
-        // 1176 defense
-
         'ArmrFish': ['water', 32000, 1122],
         'Swashbuk': ['water', 30500, 898],
         'WatrElem': ['water', 56500, 2990],
@@ -141,8 +139,6 @@ module.exports = {
         'WtrBeast': ['water', 32000, 942],
         'WtrHawk': ['water', 35000, 1077],
         'Assassin': [['mystic', 'earth'], 63000, 2990]
-
-        // 1560 defense
       }
     }
 
