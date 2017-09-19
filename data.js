@@ -112,6 +112,41 @@ module.exports = {
   // (This tends to require a fair amount of patience, since it can be hard to pick out single
   // experience bubbles in the cloud of items that drop at the end of a wave.)
   zoneData: {
+    'DarKndm1': {
+      waves: ['boss1', 'boss2', 'boss3'],
+      waveEntries: {
+        'boss1': [
+          ['ToughRat', 'ToughRat', 'RockFish', 'TerBear', 'StonSnek']
+        ],
+        'boss2': [
+          ['ArmrFish', 'Swashbuk', 'Swashbuk', 'WatrElem']
+        ],
+        'boss3': [
+          ['TerStatu', 'WtrBeast', 'WtrBeast', 'WtrHawk', 'Assassin']
+        ]
+      },
+      enemies: {
+        'ToughRat': ['earth', 28000, 808],
+        'RockFish': ['earth', 32000, 1167],
+        'TerBear': ['earth', 30500, 898],
+        'StonSnek': ['earth', 53000, 2990],
+
+        // 1176 defense
+
+        'ArmrFish': ['water', 32000, 1122],
+        'Swashbuk': ['water', 30500, 898],
+        'WatrElem': ['water', 56500, 2990],
+
+        'TerStatu': ['earth', 28000, 1077],
+        'WtrBeast': ['water', 32000, 942],
+        'WtrHawk': ['water', 35000, 1077],
+        'Assassin': [['mystic', 'earth'], 63000, 2990]
+
+        // 1560 defense
+      }
+    }
+
+    /*
     'GrdCros1': {
       waves: ['random', 'random', 'random', 'random', 'boss'],
       waveEntries: {
@@ -165,7 +200,7 @@ module.exports = {
         'boss': [
           ['MysSpirit', 'FlotBear', 'MysGrmln', 'WndTurtl']
         ]
-      },
+      [M`46},
       enemies: {
         'FlotBear': ['air', 18500, 766],
         'MysGrmln': ['mystic', 13320, 657],
@@ -368,5 +403,6 @@ module.exports = {
         // 1560 defense
       }
     }
+    */
   }
 }

@@ -28,20 +28,20 @@ function getAdvantageFactor(attackerElements, defenderElements) {
   }
 }
 
-function getDamage(attackerLevel, attackerAttack, defenderDefense, attackerElements, defenderElements) {
+function getDamage(attackerAttack, defenderDefense, attackerElements, defenderElements) {
   const advantageFactor = getAdvantageFactor(attackerElements, defenderElements)
 
-  return (2.4 * attackerLevel) * attackerAttack / defenderDefense * advantageFactor
+  return attackerAttack / defenderDefense * advantageFactor
 }
 
-function getAttackStat(damageDealt, attackerLevel, defenderDefense, attackerElements, defenderElements) {
+function getAttackStat(damageDealt, defenderDefense, attackerElements, defenderElements) {
   const advantageFactor = getAdvantageFactor(attackerElements, defenderElements)
 
-  return damageDealt / ((2.4 * attackerLevel) / defenderDefense * advantageFactor)
+  return damageDealt / advantageFactor * defenderDefense
 }
 
 function getEnemyDamage(enemy, knight) {
-  return getDamage(1, enemy[1], knight.defense, enemy[0], knight.elements)
+  return getDamage(enemy[1], knight.defense, enemy[0], knight.elements)
 }
 
 function getBattleStats(zone, knight) {
