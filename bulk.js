@@ -58,10 +58,11 @@ function bulkSimulateBattles({
       }
       const avgDamage = totalDamage / sampleSimulationsPerSetup
       const avgXP = totalXP / sampleSimulationsPerSetup
-      const rate = avgXP / avgDamage
-      const score = rate * knight.health
+      const xpRate = avgXP / avgDamage
+      const xpPerHealthBar = xpRate * knight.health
+      const survivableBattleCount = knight.health / avgDamage
 
-      return {knight, zoneName, zone, avgDamage, avgXP, rate, score}
+      return {knight, zoneName, zone, avgDamage, avgXP, xpRate, xpPerHealthBar, survivableBattleCount}
     })
   }).reduce(joinArrays, [])
 }
@@ -88,10 +89,10 @@ const pad = (str, len) => str.length >= len ? str : pad(str + ' ', len)
 
 function undetailedShowTopNResults(results, count) {
   for (let i = Math.min(count, results.length - 1); i >= 0; --i) {
-    const { zoneName, rate, score, avgDamage, avgXP, knight } = results[i]
+    const { zoneName, xpRate, xpPerHealthBar, avgDamage, avgXP, knight } = results[i]
     console.log(
       pad(`(# ${i + 1}) `, results.length.toString().length + 6) +
-      pad(round`{${score} XP} = ${knight.health} * ${rate} (${avgXP}/${avgDamage})`, 35)
+      pad(round`{${xpPerHealthBar} XP} = ${knight.health} * ${xpRate} (${avgXP}/${avgDamage})`, 35)
       + `--  [${zoneName}] ${knight.title}`)
   }
 }
@@ -124,12 +125,13 @@ function getTopNResultsSeparateArmor(results, count) {
 }
 
 function detailedShowResults(results) {
-  for (const { zoneName, knight, avgDamage, avgXP, rate, score } of results) {
+  for (const { zoneName, knight, avgDamage, avgXP, xpRate, xpPerHealthBar, survivableBattleCount } of results) {
     console.log(round`[${zoneName}] ${knight.title}`)
-    console.log(round`Experience per full health bar (${knight.health} HP): ${score}`)
+    console.log(round`Experience per full health bar (${knight.health} HP): ${xpPerHealthBar}`)
     console.log(round`Average damage: ${avgDamage}`)
     console.log(round`Average XP: ${avgXP}`)
-    console.log(round`XP/damage rate: ${rate} (Higher is better)`)
+    console.log(round`XP/damage rate: ${xpRate} (Higher is better)`)
+    console.log(`Survivable battle count: ${Math.floor(survivableBattleCount)}`)
     console.log('')
   }
 }

@@ -15,7 +15,9 @@ const results = bulkSimulateBattles({
   // zoneData: {'Zephyr1': zoneData['Zephyr1']}
 })
 
-results.sort((a, b) => b.score - a.score)
+const sortByProperty = p => (a, b) => b[p] - a[p]
+results.sort(sortByProperty('xpPerHealthBar'))
+// results.sort(sortByProperty('survivableBattleCount'))
 
 undetailedShowTopNResults(results, Infinity)
 console.log('')

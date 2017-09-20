@@ -32,11 +32,11 @@ module.exports = {
     // Name, +DEF, elements
     //                                               Air    Water    Fire    Mystic    Earth
     armor: [
-      ['Prehistoric Huntsguard', 1604,             ['air',                            'earth']],
+      ['Prehistoric Huntsguard', 1676,             ['air',                            'earth']],
       ['Gunslinger\'s Trappings', 1382,            ['air', 'water'                           ]],
     //['Northerner\'s Battlegear', 685,            [       'water'                           ]],
       ['Pelagic Platemail', 1447,                  [       'water'                           ]],
-      ['Siegemage Robes', 1633,                    [       'water',         'mystic'         ]],
+      ['Siegemage Robes', 1653,                    [       'water',         'mystic'         ]],
       ['Darkscale Battlegear', 1143,               [                'fire', 'mystic'         ]],
       ['Overgrown Lifeplate', 1382,                [                        'mystic', 'earth']],
     //['Silver Chromatic Mantle', 390, 'starmetal'],
@@ -126,19 +126,39 @@ module.exports = {
         ]
       },
       enemies: {
-        'ToughRat': ['earth', 28000, 808],
-        'RockFish': ['earth', 32000, 1167],
-        'TerBear': ['earth', 30500, 898],
-        'StonSnek': ['earth', 53000, 2990],
+        'ToughRat': ['earth', 25000, 808],
+        'RockFish': ['earth', 30000, 1167],
+        'TerBear': ['earth', 30000, 898],
+        'StonSnek': ['earth', 50000, 2990],
 
-        'ArmrFish': ['water', 32000, 1122],
-        'Swashbuk': ['water', 30500, 898],
+        'ArmrFish': ['water', 30000, 1122],
+        'Swashbuk': ['water', 30000, 898],
         'WatrElem': ['water', 56500, 2990],
 
         'TerStatu': ['earth', 28000, 1077],
-        'WtrBeast': ['water', 32000, 942],
-        'WtrHawk': ['water', 35000, 1077],
+        'WtrBeast': ['water', 30000, 942],
+        'WtrHawk': ['water', 32500, 1077],
         'Assassin': [['mystic', 'earth'], 63000, 2990]
+      }
+    },
+
+    'MstMrsh1': {
+      waves: ['random', 'random', 'random', 'random', 'random', 'boss'],
+      waveEntries: {
+        'random': [
+          ['WtrBeast', 'WtrBeast', 'WtrBeast'],
+          ['WtrBeast', 'TerDryad', 'WtrBeast', 'WtrBeast'],
+          ['WtrBeast', 'TerDryad', 'TerDryad']
+        ],
+        'boss': [
+          ['WtrBeast', 'WtrDryad', 'TerDryad', 'Kraken']
+        ]
+      },
+      enemies: {
+        'WtrBeast': ['water', 23500, 628],
+        'TerDryad': ['earth', 19000, 599],
+        'WtrDryad': ['water', 22000, 778],
+        'Kraken': [['water', 'earth'], 42000, 1994]
       }
     }
 
